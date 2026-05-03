@@ -2,15 +2,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY Directory.Build.props ./
-COPY src/Shared/Shared.csproj            src/Shared/
-COPY src/Read.Api/Read.Api.csproj        src/Read.Api/
-RUN dotnet restore src/Read.Api/Read.Api.csproj
+COPY shared/Shared.csproj                  shared/
+COPY read/Read.Api.csproj                  read/
+RUN dotnet restore read/Read.Api.csproj
 
-COPY src/Shared/      src/Shared/
-COPY src/Read.Api/    src/Read.Api/
+COPY shared/          shared/
+COPY read/            read/
 
-RUN dotnet publish src/Read.Api/Read.Api.csproj \
+RUN dotnet publish read/Read.Api.csproj \
     --configuration Release \
     --no-restore \
     --output /app/publish \
@@ -24,4 +23,4 @@ WORKDIR /app
 COPY --from=build /app/publish .
 USER $APP_UID
 EXPOSE 8080
-ENTRYPOINT ["dotnet", "EmailPlatform.Read.Api.dll"]
+ENTRYPOINT ["dotnet", "Read.Api.dll"]
